@@ -1,17 +1,81 @@
+// ignore_for_file: avoid_print, prefer_const_constructors, use_build_context_synchronously
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth_platform_interface/src/firebase_auth_exception.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterauthapp/components/my_button.dart';
 import 'package:flutterauthapp/components/my_textfield.dart';
 import 'package:flutterauthapp/components/square_tile.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   LoginPage({super.key});
 
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   //text editing controllers
-  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
+
   final passwordController = TextEditingController();
 
   //sign user in method
-  void signUserIn() {}
+  void signUserIn() async {
+    //show loading circle
+    showDialog(
+        context: context,
+        builder: (context) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+
+    //try sign in
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+      //pop the loading circle
+      Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+      //pop the loading circle
+      Navigator.pop(context);
+      // WRONG EMAIL
+      if (e.code == 'user-not-found') {
+        //show error to user
+        wrongEmailMessage();
+      }
+      //WRONG PASSWORD
+      else if (e.code == 'wrong-password') {
+        //show error to user
+        wrongPasswordMessage();
+      }
+    }
+  }
+
+  //wromg email message pop up
+  void wrongEmailMessage() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Incorrect Email.'),
+          );
+        });
+  }
+
+  //wromg password message pop up
+  void wrongPasswordMessage() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Incorrect Password.'),
+          );
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,8 +113,8 @@ class LoginPage extends StatelessWidget {
               ),
               //username textfield
               MyTextField(
-                controller: usernameController,
-                hintText: 'Username',
+                controller: emailController,
+                hintText: 'Email',
                 obscureText: false,
               ),
 
