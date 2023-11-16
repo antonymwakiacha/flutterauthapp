@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print, prefer_const_constructors, use_build_context_synchronously
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_platform_interface/src/firebase_auth_exception.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,9 @@ class _RegisterPageState extends State<RegisterPage> {
 
   final passwordController = TextEditingController();
   final confirmpasswordController = TextEditingController();
+  final _firstnamecontroller = TextEditingController();
+  final _lastnamecontroller = TextEditingController();
+  final _agecontroller = TextEditingController();
 
   //sign user up method
   void signUserUp() async {
@@ -40,6 +44,14 @@ class _RegisterPageState extends State<RegisterPage> {
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text,
           password: passwordController.text,
+        );
+
+        //add user details
+        addUserDetails(
+          _firstnamecontroller.text.trim(),
+          _lastnamecontroller.text.trim(),
+          emailController.text.trim(),
+          int.parse(_agecontroller.text.trim()),
         );
       } else {
         //password do not match
@@ -70,6 +82,16 @@ class _RegisterPageState extends State<RegisterPage> {
         });
   }
 
+  Future addUserDetails(
+      String firstName, String lastName, String email, int age) async {
+    await FirebaseFirestore.instance.collection('users').add({
+      'first name': firstName,
+      'last name': lastName,
+      'email': email,
+      'age': age,
+    });
+  }
+
   //wromg email message pop up
   // void wrongEmailMessage() {
   //   showDialog(
@@ -98,6 +120,10 @@ class _RegisterPageState extends State<RegisterPage> {
     emailController.dispose();
     passwordController.dispose();
     confirmpasswordController.dispose();
+    _firstnamecontroller.dispose();
+    _lastnamecontroller.dispose();
+    _agecontroller.dispose();
+
     super.dispose();
   }
 
@@ -131,6 +157,36 @@ class _RegisterPageState extends State<RegisterPage> {
                     color: Colors.grey[700],
                     fontSize: 16,
                   ),
+                ),
+
+                const SizedBox(
+                  height: 25,
+                ),
+                //first name textfield
+                MyTextField(
+                  controller: _firstnamecontroller,
+                  hintText: 'First Name',
+                  obscureText: false,
+                ),
+
+                const SizedBox(
+                  height: 25,
+                ),
+                //last name textfield
+                MyTextField(
+                  controller: _lastnamecontroller,
+                  hintText: 'Last Name',
+                  obscureText: false,
+                ),
+
+                const SizedBox(
+                  height: 25,
+                ),
+                //age textfield
+                MyTextField(
+                  controller: _agecontroller,
+                  hintText: 'Age',
+                  obscureText: false,
                 ),
 
                 const SizedBox(
