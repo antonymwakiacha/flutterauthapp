@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterauthapp/components/my_button.dart';
 import 'package:flutterauthapp/components/my_textfield.dart';
 import 'package:flutterauthapp/components/square_tile.dart';
+import 'package:flutterauthapp/services/auth_service.dart';
 
 class RegisterPage extends StatefulWidget {
   final void Function()? onTap;
@@ -90,6 +91,15 @@ class _RegisterPageState extends State<RegisterPage> {
   //         );
   //       });
   // }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    emailController.dispose();
+    passwordController.dispose();
+    confirmpasswordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -221,6 +231,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   children: [
                     //google button
                     SquareTile(
+                      onTap: () => AuthService().signInWithGoogle(),
                       imagePath: 'lib/images/google.png',
                     ),
 
@@ -229,6 +240,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     //apple button
                     SquareTile(
+                      onTap: () {},
                       imagePath: 'lib/images/apple.png',
                     ),
                   ],

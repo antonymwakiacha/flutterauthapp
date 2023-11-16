@@ -1,17 +1,19 @@
 // ignore_for_file: avoid_print, prefer_const_constructors, use_build_context_synchronously
 
+import 'dart:math';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_platform_interface/src/firebase_auth_exception.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterauthapp/components/my_button.dart';
 import 'package:flutterauthapp/components/my_textfield.dart';
 import 'package:flutterauthapp/components/square_tile.dart';
+import 'package:flutterauthapp/pages/forgot_pw_page.dart';
+import 'package:flutterauthapp/services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   final void Function()? onTap;
-  const LoginPage({
-    required this.onTap,
-    super.key});
+  const LoginPage({required this.onTap, super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -62,6 +64,14 @@ class _LoginPageState extends State<LoginPage> {
             ),
           );
         });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
 
   //wromg email message pop up
@@ -121,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(
                   height: 25,
                 ),
-                //username textfield
+                //email textfield
                 MyTextField(
                   controller: emailController,
                   hintText: 'Email',
@@ -148,10 +158,21 @@ class _LoginPageState extends State<LoginPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text("Forgot Password?",
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return FogortPasswordPage();
+                          }));
+                        },
+                        child: Text(
+                          "Forgot Password?",
                           style: TextStyle(
-                            color: Colors.grey[600],
-                          )),
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -162,7 +183,7 @@ class _LoginPageState extends State<LoginPage> {
 
                 //sign in button
                 MyButton(
-                  text:'Sign In',
+                  text: 'Sign In',
                   onTap: signUserIn,
                 ),
 
@@ -205,6 +226,7 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     //google button
                     SquareTile(
+                      onTap: () => AuthService().signInWithGoogle(),
                       imagePath: 'lib/images/google.png',
                     ),
 
@@ -213,6 +235,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     //apple button
                     SquareTile(
+                      onTap: () {},
                       imagePath: 'lib/images/apple.png',
                     ),
                   ],

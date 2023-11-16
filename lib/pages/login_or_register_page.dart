@@ -30,6 +30,6 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
         onTap: togglePages,
       );
     }
-    return Container();
+  
   }
 }
